@@ -1,7 +1,7 @@
 extern crate structopt;
 
-use rand::distributions::{Distribution, Uniform};
-use rand::thread_rng;
+use rand::{thread_rng, Rng};
+use std::iter;
 use structopt::StructOpt;
 
 const COMPANIES: usize = 10;
@@ -16,15 +16,13 @@ fn main() {
     let opt = Opt::from_args();
     if opt.generate {
         let mut rng = thread_rng();
-        let value_range = Uniform::new_inclusive(0, 1);
         for _ in 0..100 {
-            let v: Vec<&str> = value_range
-                .sample_iter(&mut rng)
+            let v: Vec<&str> = iter::repeat(())
+                .map(|()| rng.gen())
                 .take(COMPANIES + 1)
                 .map(|x| match x {
-                    0 => "0",
-                    1 => "1",
-                    _ => "",
+                    false => "0",
+                    true => "1",
                 })
                 .collect();
             println!("{}", v.join(" "));
